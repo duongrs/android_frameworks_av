@@ -286,6 +286,14 @@ private:
 
     status_t setupEAC3Codec(bool encoder, int32_t numChannels, int32_t sampleRate);
 
+    //    Added by Ray Park 20150202
+    status_t setupDTSCodec(bool encoder, int32_t numChannels, int32_t sampleRate);
+    status_t setupAC3CodecNexell(bool encoder, int32_t numChannels, int32_t sampleRate);
+    status_t setupFLACCodecNexell(bool encoder, int32_t numChannels, int32_t sampleRate);
+    status_t setupRACodecNexell(bool encoder, int32_t numChannels, int32_t sampleRate, int32_t bitsPerFrame, int32_t bitRate);
+    status_t setupWMACodecNexell(bool encoder, int32_t numChannels, int32_t sampleRate, int32_t blockAlign, int32_t bitRate, int32_t version);
+    status_t setMPGAuidoFormatNexell(bool encoder, int32_t numChannels, int32_t sampleRate);
+     
     status_t selectAudioPortFormat(
             OMX_U32 portIndex, OMX_AUDIO_CODINGTYPE desiredFormat);
 
