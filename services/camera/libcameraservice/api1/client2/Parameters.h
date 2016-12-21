@@ -181,8 +181,13 @@ struct Parameters {
     // Max preview size allowed
     // This is set to a 1:1 value to allow for any aspect ratio that has
     // a max long side of 1920 pixels
+#ifdef PATCH_FOR_SLSIAP
+    static const unsigned int MAX_PREVIEW_WIDTH = 4096;
+    static const unsigned int MAX_PREVIEW_HEIGHT = 4096;
+#else
     static const unsigned int MAX_PREVIEW_WIDTH = 1920;
     static const unsigned int MAX_PREVIEW_HEIGHT = 1920;
+#endif
     // Initial max preview/recording size bound
     static const int MAX_INITIAL_PREVIEW_WIDTH = 1920;
     static const int MAX_INITIAL_PREVIEW_HEIGHT = 1080;

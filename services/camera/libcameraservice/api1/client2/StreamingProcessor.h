@@ -74,6 +74,11 @@ class StreamingProcessor:
 
     status_t stopStream();
 
+#ifdef PATCH_FOR_SLSIAP
+    status_t deletePreviewStreamNoLocked();
+    status_t deleteRecordingStreamLocked();
+#endif
+    
     // Returns the request ID for the currently streaming request
     // Returns 0 if there is no active request.
     status_t getActiveRequestId() const;

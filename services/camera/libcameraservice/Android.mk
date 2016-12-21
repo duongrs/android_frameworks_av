@@ -75,6 +75,10 @@ LOCAL_C_INCLUDES += \
 
 LOCAL_CFLAGS += -Wall -Wextra
 
+ifeq ($(TARGET_BOARD_PLATFORM), slsiap)
+  LOCAL_CFLAGS += -DPATCH_FOR_SLSIAP
+endif
+
 LOCAL_MODULE:= libcameraservice
 
 include $(BUILD_SHARED_LIBRARY)

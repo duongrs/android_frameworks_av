@@ -175,6 +175,31 @@ enum {
     kKeyTrackIsForced     = 'frcd', // bool (int32_t)
 };
 
+//
+//    For Nexell FFMPEG Extractor
+//
+enum {
+  kKeyRawCodecSpecificData = 'rcsd',
+  kKeyWMVVersion           = 'wmvv',
+  kTypeWMVVer_7            = 'wmv7',
+  kTypeWMVVer_8            = 'wmv8',
+  kTypeWMVVer_9            = 'wmv9',
+  kKeyWMAVersion           = 'wmav',
+  kTypeWMA                 = 'wma ',
+  kTypeWMAPro              = 'wmap',
+  kTypeWMALossLess         = 'wmal',
+
+  kKeyRVVersion            = 'rvvr',
+  kTypeRVVer_G2            = 'rvG2',
+  kTypeRVVer_8             = 'rvv8',
+  kTypeRVVer_9             = 'rvv9',
+
+  kKeyBitspersample        = 'bpsp',
+  kKeyBlockAlign           = 'baln',
+  kKeyFFCodecTag           = 'ffct',
+  kKeyMpegAudioLayer       = 'mpgl',
+};
+
 enum {
     kTypeESDS        = 'esds',
     kTypeAVCC        = 'avcc',

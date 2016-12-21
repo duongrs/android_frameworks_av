@@ -120,6 +120,28 @@ LOCAL_SHARED_LIBRARIES += \
 
 LOCAL_CFLAGS += -Wno-multichar
 
+ifeq ($(EN_FFMPEG_EXTRACTOR),true)
+
+FFMPEG_PATH     := $(TOP)/hardware/samsung_slsi/slsiap/omx/codec/ffmpeg
+LOCAL_CPPFLAGS  += -DENABLE_FFMPEG_EXTRACTOR=1
+LOCAL_CFLAGS    += -D__STDC_CONSTANT_MACROS=1 -D__STDINT_LIMITS=1
+LOCAL_C_INCLUDES += $(FFMPEG_PATH)/include \
+                $(TOP)/hardware/samsung_slsi/slsiap/omx/extractor/ffmpeg \
+                $(LOCAL_PATH)/ffmpegExtractor
+
+LOCAL_STATIC_LIBRARIES += libNX_FFMpegExtractor
+
+LOCAL_LDFLAGS += \
+        -L$(FFMPEG_PATH)/libs   \
+        -lavutil-2.1.4          \
+        -lavcodec-2.1.4         \
+        -lavformat-2.1.4        \
+        -lavdevice-2.1.4        \
+        -lavfilter-2.1.4        \
+        -lavresample-2.1.4
+
+endif #       EN_FFMPEG_EXTRACTOR
+
 LOCAL_MODULE:= libstagefright
 
 LOCAL_MODULE_TAGS := optional

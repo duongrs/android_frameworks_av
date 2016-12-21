@@ -242,6 +242,14 @@ private:
 
     void setComponentRole();
 
+#if 1 //  Added  2013_07_18
+    void setDTSFormat(int32_t numChannels, int32_t sampleRate, int32_t bitRate);
+    void setFLACFormat(int32_t numChannels, int32_t sampleRate, int32_t bitRate);
+    void setRAFormat(int32_t numChannels, int32_t sampleRate, int32_t bitsPerFrame, int32_t bitRate);
+    void setWMAFormat(int32_t numChannels, int32_t sampleRate, int32_t blockAlign, int32_t bitRate, int32_t version);
+    void setMPGAudioFormat(int32_t numChannels, int32_t sampleRate);
+#endif
+
     void setAMRFormat(bool isWAMR, int32_t bitRate);
 
     status_t setAACFormat(

@@ -979,6 +979,25 @@ void MatroskaExtractor::addTracks() {
                                 codecID);
                         continue;
                     }
+#if 1   //  Added by Ray Park for XVID
+                } else if (!strcmp("V_MS/VFW/FOURCC", codecID)) {
+                    if (codecPrivateSize >= 40) {
+                        uint32_t fourcc;
+                        memcpy(&fourcc, codecPrivate+16, 4);
+                        if( fourcc != 0x44495658)   //  "XVID"
+                        {
+                            ALOGW("%s is detected, but does not support fourcc 0x%x.",
+                                    codecID, fourcc);
+                            continue;
+                        }
+                        meta->setCString(
+                                kKeyMIMEType, MEDIA_MIMETYPE_VIDEO_MPEG4);
+                    }else{
+                        ALOGW("%s is detected, but too short codecPrivate data.",
+                                codecID);
+                        continue;
+                    }
+#endif
                 } else if (!strcmp("V_VP8", codecID)) {
                     meta->setCString(kKeyMIMEType, MEDIA_MIMETYPE_VIDEO_VP8);
                 } else if (!strcmp("V_VP9", codecID)) {
@@ -1017,6 +1036,14 @@ void MatroskaExtractor::addTracks() {
                     mSeekPreRollNs = track->GetSeekPreRoll();
                 } else if (!strcmp("A_MPEG/L3", codecID)) {
                     meta->setCString(kKeyMIMEType, MEDIA_MIMETYPE_AUDIO_MPEG);
+#if 1   //  Added by Ray Park Support AC3 & FLAC Container
+                } else if (!strcmp("A_AC3", codecID)) {
+                    meta->setCString(kKeyMIMEType, MEDIA_MIMETYPE_AUDIO_AC3);
+                } else if (!strcmp("A_FLAC", codecID)) {
+                    meta->setCString(kKeyMIMEType, MEDIA_MIMETYPE_AUDIO_FLAC);
+                } else if (!strcmp("A_DTS", codecID)) {
+                    meta->setCString(kKeyMIMEType, MEDIA_MIMETYPE_AUDIO_DTS);
+#endif
                 } else {
                     ALOGW("%s is not supported.", codecID);
                     continue;

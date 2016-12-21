@@ -100,7 +100,8 @@ struct ANetworkSession::Session : public RefBase {
     status_t writeMore();
 
     status_t sendRequest(
-            const void *data, ssize_t size, bool timeValid, int64_t timeUs);
+            const void *data, ssize_t size, bool timeValid, int64_t timeUs,
+            bool stream = false);
 
     void setMode(Mode mode);
 
@@ -689,7 +690,8 @@ status_t ANetworkSession::Session::writeMore() {
 }
 
 status_t ANetworkSession::Session::sendRequest(
-        const void *data, ssize_t size, bool timeValid, int64_t timeUs) {
+        const void *data, ssize_t size, bool timeValid, int64_t timeUs,
+        bool stream) {
     CHECK(mState == CONNECTED || mState == DATAGRAM);
 
     if (size < 0) {
@@ -702,7 +704,12 @@ status_t ANetworkSession::Session::sendRequest(
 
     sp<ABuffer> buffer;
 
-    if (mState == CONNECTED && mMode == MODE_DATAGRAM) {
+    // by sapark
+    if (mState == CONNECTED && mMode == MODE_DATAGRAM && stream) {
+        buffer = new ABuffer(size);
+        memcpy(buffer->data(), data, size);
+    }
+    else if (mState == CONNECTED && mMode == MODE_DATAGRAM) {
         CHECK_LE(size, 65535);
 
         buffer = new ABuffer(size + 2);
@@ -998,6 +1005,10 @@ status_t ANetworkSession::createClientOrServer(
     if (mode == kModeCreateUDPSession) {
         int size = 256 * 1024;
 
+        //lesc0.
+        const int yes = 1;
+        setsockopt(s, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes));
+
         res = setsockopt(s, SOL_SOCKET, SO_RCVBUF, &size, sizeof(size));
 
         if (res < 0) {
@@ -1204,7 +1215,8 @@ status_t ANetworkSession::connectUDPSession(
 
 status_t ANetworkSession::sendRequest(
         int32_t sessionID, const void *data, ssize_t size,
-        bool timeValid, int64_t timeUs) {
+        bool timeValid, int64_t timeUs,
+        bool stream) {
     Mutex::Autolock autoLock(mLock);
 
     ssize_t index = mSessions.indexOfKey(sessionID);
@@ -1215,7 +1227,8 @@ status_t ANetworkSession::sendRequest(
 
     const sp<Session> session = mSessions.valueAt(index);
 
-    status_t err = session->sendRequest(data, size, timeValid, timeUs);
+    // by sapark
+    status_t err = session->sendRequest(data, size, timeValid, timeUs, stream);
 
     interrupt();
 

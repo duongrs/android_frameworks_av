@@ -233,6 +233,33 @@ status_t StreamingProcessor::deletePreviewStream() {
     return OK;
 }
 
+#ifdef PATCH_FOR_SLSIAP
+status_t StreamingProcessor::deletePreviewStreamNoLocked() {
+    ATRACE_CALL();
+    status_t res;
+
+    if (mPreviewStreamId != NO_STREAM) {
+        sp<CameraDeviceBase> device = mDevice.promote();
+        if (device == 0) {
+            ALOGE("%s: Camera %d: Device does not exist", __FUNCTION__, mId);
+            return INVALID_OPERATION;
+        }
+
+        ALOGV("%s: for cameraId %d on streamId %d",
+            __FUNCTION__, mId, mPreviewStreamId);
+
+        res = device->deleteStream(mPreviewStreamId);
+        if (res != OK) {
+            ALOGE("%s: Unable to delete old preview stream: %s (%d)",
+                    __FUNCTION__, strerror(-res), res);
+            return res;
+        }
+        mPreviewStreamId = NO_STREAM;
+    }
+    return OK;
+}
+#endif
+
 int StreamingProcessor::getPreviewStreamId() const {
     Mutex::Autolock m(mMutex);
     return mPreviewStreamId;
@@ -463,6 +490,30 @@ status_t StreamingProcessor::deleteRecordingStream() {
     }
     return OK;
 }
+
+#ifdef PATCH_FOR_SLSIAP
+status_t StreamingProcessor::deleteRecordingStreamLocked() {
+    ATRACE_CALL();
+    status_t res;
+
+    if (mRecordingStreamId != NO_STREAM) {
+        sp<CameraDeviceBase> device = mDevice.promote();
+        if (device == 0) {
+            ALOGE("%s: Camera %d: Device does not exist", __FUNCTION__, mId);
+            return INVALID_OPERATION;
+        }
+
+        res = device->deleteStream(mRecordingStreamId);
+        if (res != OK) {
+            ALOGE("%s: Unable to delete recording stream: %s (%d)",
+                    __FUNCTION__, strerror(-res), res);
+            return res;
+        }
+        mRecordingStreamId = NO_STREAM;
+    }
+    return OK;
+}
+#endif
 
 int StreamingProcessor::getRecordingStreamId() const {
     return mRecordingStreamId;

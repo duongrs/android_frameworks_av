@@ -75,7 +75,8 @@ struct ANetworkSession : public RefBase {
 
     status_t sendRequest(
             int32_t sessionID, const void *data, ssize_t size = -1,
-            bool timeValid = false, int64_t timeUs = -1ll);
+            bool timeValid = false, int64_t timeUs = -1ll,
+            bool stream = false); // by sapark add stream
 
     status_t switchToWebSocketMode(int32_t sessionID);
 

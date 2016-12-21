@@ -888,6 +888,10 @@ void Camera2Client::stopPreview() {
     status_t res;
     if ( (res = checkPid(__FUNCTION__) ) != OK) return;
     stopPreviewL();
+#ifdef PATCH_FOR_SLSIAP
+    ALOGV("call deletePreviewStreamNoLocked()");
+    mStreamingProcessor->deletePreviewStreamNoLocked();
+#endif
 }
 
 void Camera2Client::stopPreviewL() {
@@ -1194,6 +1198,9 @@ void Camera2Client::stopRecording() {
     switch (l.mParameters.state) {
         case Parameters::RECORD:
             // OK to stop
+#ifdef PATCH_FOR_SLSIAP
+            mStreamingProcessor->deleteRecordingStreamLocked();
+#endif
             break;
         case Parameters::STOPPED:
         case Parameters::PREVIEW:

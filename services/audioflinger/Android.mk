@@ -44,6 +44,17 @@ LOCAL_C_INCLUDES := \
     $(call include-path-for, audio-effects) \
     $(call include-path-for, audio-utils)
 
+ifeq ($(EN_DUAL_AUDIO),true)
+LOCAL_C_INCLUDES += \
+    $(TOPDIR)hardware/samsung_slsi/slsiap/prebuilt/libnxdualaudio/include
+
+LOCAL_LDFLAGS += \
+    -L$(TOPDIR)hardware/samsung_slsi/slsiap/prebuilt/libnxdualaudio/lib \
+    -lnxdualaudio
+
+LOCAL_CFLAGS += -DENABLE_DUAL_AUDIO=1
+endif
+
 LOCAL_SHARED_LIBRARIES := \
     libaudioresampler \
     libaudioutils \

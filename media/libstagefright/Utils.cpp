@@ -95,6 +95,53 @@ status_t convertMetaDataToMessage(
         msg->setInt32("is-sync-frame", 1);
     }
 
+#if 1   // Added by Ray Park
+    int32_t blockAlign;
+    if (meta->findInt32(kKeyBlockAlign, &blockAlign)) {
+        msg->setInt32("block-align", blockAlign);
+    }
+
+    int32_t bitPerSample;
+    if (meta->findInt32(kKeyBitspersample, &bitPerSample)) {
+        msg->setInt32("bit-per-sample", bitPerSample);
+    }
+
+    int32_t wmaVersion;
+    if( meta->findInt32(kKeyWMAVersion, &wmaVersion ) )
+    {
+        msg->setInt32( "ffmpeg-wma-version", wmaVersion );
+    }
+
+    int32_t wmvVersion;
+    if( meta->findInt32(kKeyWMVVersion, &wmvVersion ) )
+    {
+        msg->setInt32( "ffmpeg-wmv-version", wmvVersion );
+    }
+
+    {
+        int32_t codecTag;
+        if( meta->findInt32(kKeyFFCodecTag, &codecTag ) )
+        {
+            msg->setInt32( "ffmpeg-codec-tag", codecTag );
+        }
+
+        uint32_t type;
+        const void *data;
+        size_t size;
+        if( meta->findData(kKeyRawCodecSpecificData, &type, &data, &size) )
+        {
+            if( size > 0 )
+            {
+                sp<ABuffer> buffer = new ABuffer(64*1024);
+                buffer->setRange(0, 0);
+                memcpy( buffer->data() + buffer->size() , data, size );
+                buffer->setRange(0, buffer->size() + size);
+                msg->setBuffer( "ffmpeg-extra-data", buffer );
+            }
+        }
+    }
+#endif
+
     if (!strncasecmp("video/", mime, 6)) {
         int32_t width, height;
         CHECK(meta->findInt32(kKeyWidth, &width));
@@ -638,6 +685,17 @@ static const struct mime_conv_t mimeLookup[] = {
     { MEDIA_MIMETYPE_AUDIO_RAW,         AUDIO_FORMAT_PCM_16_BIT },
     { MEDIA_MIMETYPE_AUDIO_AMR_NB,      AUDIO_FORMAT_AMR_NB },
     { MEDIA_MIMETYPE_AUDIO_AMR_WB,      AUDIO_FORMAT_AMR_WB },
+
+#if 1    //  Added by Ray Park for AC3 offloading
+    { MEDIA_MIMETYPE_AUDIO_MPEG_LAYER_I,AUDIO_FORMAT_DEFAULT },
+    { MEDIA_MIMETYPE_AUDIO_MPEG_LAYER_II,AUDIO_FORMAT_DEFAULT },
+    { MEDIA_MIMETYPE_AUDIO_AC3,         AUDIO_FORMAT_DEFAULT },
+    { MEDIA_MIMETYPE_AUDIO_DTS,         AUDIO_FORMAT_DEFAULT },
+    { MEDIA_MIMETYPE_AUDIO_RA,          AUDIO_FORMAT_DEFAULT },
+    { MEDIA_MIMETYPE_AUDIO_WMA,         AUDIO_FORMAT_DEFAULT },
+    { MEDIA_MIMETYPE_AUDIO_FLAC,        AUDIO_FORMAT_DEFAULT },
+#endif
+
     { MEDIA_MIMETYPE_AUDIO_AAC,         AUDIO_FORMAT_AAC },
     { MEDIA_MIMETYPE_AUDIO_VORBIS,      AUDIO_FORMAT_VORBIS },
     { MEDIA_MIMETYPE_AUDIO_OPUS,        AUDIO_FORMAT_OPUS},
