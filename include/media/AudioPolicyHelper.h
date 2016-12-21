@@ -54,7 +54,10 @@ static audio_stream_type_t audio_attributes_to_stream_type(const audio_attribute
     case AUDIO_USAGE_NOTIFICATION_COMMUNICATION_DELAYED:
     case AUDIO_USAGE_NOTIFICATION_EVENT:
         return AUDIO_STREAM_NOTIFICATION;
-
+            
+    case AUDIO_USAGE_EXT_SPEAKER:
+ 		return AUDIO_STREAM_EXT_SPEAKER;
+            
     case AUDIO_USAGE_UNKNOWN:
     default:
         return AUDIO_STREAM_MUSIC;
@@ -107,6 +110,12 @@ static void stream_type_to_audio_attributes(audio_stream_type_t streamType,
         attr->content_type = AUDIO_CONTENT_TYPE_SPEECH;
         attr->usage = AUDIO_USAGE_ASSISTANCE_ACCESSIBILITY;
         break;
+            
+    case AUDIO_STREAM_EXT_SPEAKER:
+        attr->content_type = AUDIO_CONTENT_TYPE_MUSIC;
+        attr->usage = AUDIO_USAGE_EXT_SPEAKER;
+        break;
+            
     default:
         ALOGE("invalid stream type %d when converting to attributes", streamType);
     }
